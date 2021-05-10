@@ -1,0 +1,25 @@
+﻿@inject Services.IDAL WeatherData 
+
+
+<table class="table text-center">
+    <tr><th colspan="4"><h3>@City</h3></th></tr>
+    <tr>
+        <th>Datum</th><th>Temperatur</th><th>Luftfuktighet</th><th>Vindhastighet</th>
+    </tr>
+    @foreach (var data in WeatherData.GetDailyWeatherDataForCity(City))
+    {
+        <tr>
+            <td>@data.Date</td>
+            <td>@data.Values.Temperature</td>
+            <td>@data.Values.RelativeHumidity</td>
+            <td>@data.Values.WindSpeed</td>
+        </tr>
+    }
+
+</table>
+
+
+@code {
+    [Parameter]
+    public string City { get; set; }
+}

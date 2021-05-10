@@ -1,0 +1,34 @@
+﻿
+
+// KOMPONENT UNDER ARBETE
+@inject Pages.IndexModel Index
+@inject Services.IDAL WeatherData    
+
+<div class="card">
+    <form method="post" asp-page-handler="Save">
+        <div class="card-body">
+            <div class="card-header text-center mb-4">
+                <h3>Infoga väderhistorik</h3>
+                <small>Data för senaste 25 dagarna</small>
+            </div>
+            <select style="width:100%" name="City">
+                @foreach (var city in Index.Cities)
+                {
+                    <option value="@city">@city</option>
+                }
+            </select>
+        </div>
+        <div class="card-footer text-center">
+            <button type="submit" class="btn btn-primary">Spara data</button>
+        </div>
+    </form>
+</div>
+
+@code {
+    public string City { get; set; }
+    
+    public void OnPostSave()
+    {
+        WeatherData.Save25DaysBackOfWeatherDataForCity(Index.City);
+    }
+}
