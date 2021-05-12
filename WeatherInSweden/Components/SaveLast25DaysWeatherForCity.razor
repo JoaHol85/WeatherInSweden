@@ -5,7 +5,7 @@
 @inject Services.IDAL WeatherData    
 
 <div class="card">
-    <form method="post" asp-page-handler="Save">
+    <form method="post">
         <div class="card-body">
             <div class="card-header text-center mb-4">
                 <h3>Infoga väderhistorik</h3>
@@ -19,16 +19,16 @@
             </select>
         </div>
         <div class="card-footer text-center">
-            <button type="submit" class="btn btn-primary">Spara data</button>
+            <button type="submit" class="btn btn-primary" @onclick="TestMethod">Spara data</button>
         </div>
     </form>
 </div>
 
 @code {
-    public string City { get; set; }
-    
-    public void OnPostSave()
+
+    private void TestMethod()
     {
         WeatherData.Save25DaysBackOfWeatherDataForCity(Index.City);
     }
+
 }

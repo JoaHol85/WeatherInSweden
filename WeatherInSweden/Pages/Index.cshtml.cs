@@ -17,16 +17,9 @@ namespace WeatherInSweden.Pages
             _IDAL = iDAL;
         }
 
-
-
         public string[] Cities { get; set; } = { "Kiruna", "Sundsvall", "Stockholm", "Jönköping", "Göteborg", "Malmö" };
         [BindProperty]
         public string City { get; set; }
-
-
-
-
-
 
         public void OnGet()
         {
