@@ -1,8 +1,7 @@
-﻿
-
-// KOMPONENT UNDER ARBETE
-@inject Pages.IndexModel Index
+﻿@inject Pages.IndexModel Index
 @inject Services.IDAL WeatherData    
+
+@*// KOMPONENT UNDER ARBETE*@
 
 <div class="card">
     <form method="post">
@@ -12,23 +11,22 @@
                 <small>Data för senaste 25 dagarna</small>
             </div>
             <select style="width:100%" name="City">
-                @foreach (var city in Index.Cities)
+                @foreach (var city in Cities)
                 {
                     <option value="@city">@city</option>
                 }
             </select>
         </div>
         <div class="card-footer text-center">
-            <button type="submit" class="btn btn-primary" @onclick="TestMethod">Spara data</button>
+            <button type="submit" class="btn btn-primary" >Spara data</button>
         </div>
     </form>
 </div>
 
 @code {
+    [Parameter]
+    public string[] Cities { get; set; }
 
-    private void TestMethod()
-    {
-        WeatherData.Save25DaysBackOfWeatherDataForCity(Index.City);
-    }
 
+    public string City { get; set; }
 }

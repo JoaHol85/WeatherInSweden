@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WeatherInSweden.Models;
 using WeatherInSweden.Pages;
 using WeatherInSweden.Services;
 
@@ -25,7 +26,6 @@ namespace WeatherInSweden
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<IndexModel>();        // kan ta borT???
             services.AddScoped<IDAL, DAL>();
             services.AddRazorPages();
         }

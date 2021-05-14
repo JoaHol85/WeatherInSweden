@@ -1,0 +1,17 @@
+﻿
+
+<table>
+    <tr>
+        <th>Meteorologisk Vår: </th><td>@Dates.MeteorolgicalSpring</td>
+    </tr>
+    <tr>
+        <th>Meteorologisk Sommar: </th><td>@Dates.MeteorologicalSummer</td>
+    </tr>
+</table>
+
+
+
+@code {
+    [Parameter]
+    public Models.MeteorologicalDates Dates { get; set; }
+}

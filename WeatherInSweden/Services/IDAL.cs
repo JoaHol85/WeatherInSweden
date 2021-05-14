@@ -11,7 +11,10 @@ namespace WeatherInSweden.Services
         public Task Save25DaysBackOfWeatherDataForCity(string city);
         public IMongoCollection<DailyWeather> DailyWeatherCollection();
         public IEnumerable<DailyWeather> GetDailyWeatherDataForCity(string city);
-
+        public CityWeatherInfo GetWeatherForCity(string city);
+        public MeteorologicalDates GetMeteorologicalDates(string city);
+        public string MeteorologicalSummer(List<DailyWeather> weatherList);
+        public string MeteorologicalSpring(List<DailyWeather> weatherList);
 
     }
 }

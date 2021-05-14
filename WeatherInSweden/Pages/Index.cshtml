@@ -1,5 +1,6 @@
 ﻿@page
 @model IndexModel
+@inject Services.IDAL WeatherData  
 @{
     ViewData["Title"] = "Home page";
 }
@@ -9,60 +10,99 @@
 </div>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-3">
 
-        KOMPONENT UNDER ARBETE
-        <component type="typeof(Components.SaveLast25DaysWeatherForCity)" render-mode="Static"/>
+        @*KOMPONENT UNDER ARBETE
+        <component type="typeof(Components.SaveLast25DaysWeatherForCity)" render-mode="Static" param-Cities='Model.Cities'/>*@
 
 
-            @*<div class="card mb-3">
-                <form method="post" asp-page-handler="SaveWeatherData">
-                    <div class="card-body">
-                        <div class="card-header text-center mb-4">
-                            <h3>Infoga väderhistorik</h3>
-                            <small>Data för senaste 25 dagarna</small>
-                        </div>
-                        <select style="width:100%" name="City">
-                            @foreach (var city in Model.Cities)
-                            {
-                                <option value="@city">@city</option>
-                            }
-                        </select>
+
+
+        <div class="card mb-3">
+            <form method="post" asp-page-handler="SaveWeatherData">
+                <div class="card-body">
+                    <div class="card-header text-center mb-4">
+                        <h3>Infoga väderhistorik</h3>
+                        <small>Data för senaste 25 dagarna</small>
                     </div>
-                    <div class="card-footer text-center">
-                        <button type="submit" class="btn btn-primary">Spara data</button>
-                    </div>
-                </form>
-            </div>*@
+                    <select style="width:100%" name="City">
+                        @foreach (var city in Model.Cities)
+                        {
+                            <option value="@city">@city</option>
+                        }
+                    </select>
+                </div>
+                <div class="card-footer text-center">
+                    <button type="submit" class="btn btn-primary">Spara data</button>
+                </div>
+            </form>
+        </div>
 
 
-            <div class="card">
-                <form method="post" asp-page-handler="ShowWeatherDataForCity">
-                    <div class="card-body">
-                        <div class="card-header text-center mb-4">
-                            <h3>Visa väderdata</h3>
-                            <small>Välj stad för att visa väderdata</small>
-                        </div>
-                        <select style="width:100%" name="City">
-                            @foreach (var city in Model.Cities)
-                            {
-                                <option value="@city">@city</option>
-                            }
-                        </select>
+        <div class="card mb-3">
+            <form method="post" asp-page-handler="ShowWeatherDataForCity">
+                <div class="card-body">
+                    <div class="card-header text-center mb-4">
+                        <h3>Visa väderdata</h3>
+                        <small>Välj stad för att visa väderdata</small>
                     </div>
-                    <div class="card-footer text-center">
-                        <button type="submit" class="btn btn-primary">Visa väderdata</button>
-                    </div>
-                </form>
+                    <select style="width:100%" name="City">
+                        @foreach (var city in Model.Cities)
+                        {
+                            <option value="@city">@city</option>
+                        }
+                    </select>
+                </div>
+                <div class="card-footer text-center">
+                    <button type="submit" class="btn btn-primary">Visa väderdata</button>
+                </div>
+            </form>
+        </div>
+
+
+        @*// TESTNING*@
+        <div class="card">
+            <div class="card-body">
+                <div class="card-header text-center mb-4">
+                    <h3>Meteorologiska datum</h3>
+                </div>
+                @if (Model.City != null)
+                {
+                    <component type="typeof(Components.MeteorologicalDates)" render-mode="Static" param-Dates="WeatherData.GetMeteorologicalDates(Model.City)" />
+                }
             </div>
+            <div class="card-footer text-center">
+            </div>
+        </div>
+
+
+
+
+
+
+        @*<div class="card">
+            <form method="post" asp-page-handler="">
+                <div class="card-body">
+                    <div class="card-header text-center mb-4">
+                        <h3>Visa meteorologiska datum</h3>
+                    </div>
+                </div>
+                <div class="card-footer text-center">
+                    <button type="submit" class="btn btn-primary">Visa meteorologiska datum</button>
+                </div>
+            </form>
+        </div>*@
 
     </div>
-    <div class="col-md-8">
+    <div class="col-md-9">
         <div class="row">
 
         </div>
         <div class="row">
-            <component type="typeof(Components.CityWeather)" render-mode="Static" param-City='@Model.City' />
+            @if (Model.City != null)
+            {
+                 <component type="typeof(Components.CityWeather)" render-mode="Static" param-City='@Model.City' param-Weather='@WeatherData.GetWeatherForCity(Model.City)'/>
+            }
         </div>
     </div>
 </div>

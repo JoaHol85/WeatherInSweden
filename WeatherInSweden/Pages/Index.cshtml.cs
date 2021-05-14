@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WeatherInSweden.Models;
 using WeatherInSweden.Services;
 
 namespace WeatherInSweden.Pages
@@ -21,6 +22,9 @@ namespace WeatherInSweden.Pages
         [BindProperty]
         public string City { get; set; }
 
+        public DailyWeather MyWeather { get; set; }
+
+
         public void OnGet()
         {
         }
@@ -28,6 +32,7 @@ namespace WeatherInSweden.Pages
         public void OnPostSaveWeatherData()
         {
             _IDAL.Save25DaysBackOfWeatherDataForCity(City);
+            City = null;
             OnGet();
         }
 
@@ -36,8 +41,5 @@ namespace WeatherInSweden.Pages
             _IDAL.GetDailyWeatherDataForCity(City);
             OnGet();
         }
-
-
-
     }
 }

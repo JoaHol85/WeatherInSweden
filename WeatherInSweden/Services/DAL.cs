@@ -8,16 +8,20 @@ using System.Threading.Tasks;
 using WeatherInSweden.Models;
 using System.Text.Json;
 using MongoDB.Bson;
+using WeatherInSweden.Pages;
 
 namespace WeatherInSweden.Services
 {
     public class DAL : IDAL
     {
-        //private readonly IConfiguration _configuration;
-        //public DAL(IConfiguration configuration)
+        //private readonly HttpClient _httpClient;
+
+        //public DAL(HttpClient httpClient)
         //{
-        //    _configuration = configuration;
+        //    _httpClient = httpClient;
         //}
+
+
 
         public MongoClient GetMongoClient()
         {
@@ -49,10 +53,10 @@ namespace WeatherInSweden.Services
                     {
                         Clouds = dailyWeather.data[0].clouds,
                         MaxUV = dailyWeather.data[0].max_uv,
-                        RelativeHumidity = Math.Round(dailyWeather.data[0].rh, 2),
-                        Temperature = Math.Round(dailyWeather.data[0].temp, 2),
+                        RelativeHumidity = dailyWeather.data[0].rh,
+                        Temperature = dailyWeather.data[0].temp,
                         WindDirection = dailyWeather.data[0].wind_dir,
-                        WindSpeed = Math.Round(dailyWeather.data[0].wind_spd, 2)
+                        WindSpeed = dailyWeather.data[0].wind_spd
                     }
                 };
 
@@ -76,5 +80,112 @@ namespace WeatherInSweden.Services
             return collection.Find(new BsonDocument()).ToList().Where(q => q.City == city);
         }
 
+
+        public CityWeatherInfo GetWeatherForCity(string city)
+        {
+            CityWeatherInfo weather = new();
+            var collectedWeatherInCity = GetDailyWeatherDataForCity(city).ToList();
+            weather.City = city;
+
+            Values avgValues = new();
+            avgValues.MaxUV = Math.Round(collectedWeatherInCity.Average(q => q.Values.MaxUV), 2);
+            avgValues.RelativeHumidity = Math.Round(collectedWeatherInCity.Average(q => q.Values.RelativeHumidity), 2);
+            avgValues.Temperature = Math.Round(collectedWeatherInCity.Average(q => q.Values.Temperature), 2);
+            avgValues.Clouds = Math.Round(collectedWeatherInCity.Average(q => q.Values.Clouds), 2);
+            avgValues.WindDirection = Math.Round(collectedWeatherInCity.Average(q => q.Values.WindDirection), 2);
+            avgValues.WindSpeed = Math.Round(collectedWeatherInCity.Average(q => q.Values.WindSpeed), 2);
+            weather.AverageValues = avgValues;
+
+            Values minValues = new();
+            minValues.MaxUV = Math.Round(collectedWeatherInCity.Min(q => q.Values.MaxUV), 2);
+            minValues.RelativeHumidity = Math.Round(collectedWeatherInCity.Min(q => q.Values.RelativeHumidity), 2);
+            minValues.Temperature = Math.Round(collectedWeatherInCity.Min(q => q.Values.Temperature), 2);
+            minValues.Clouds = Math.Round(collectedWeatherInCity.Min(q => q.Values.Clouds), 2);
+            minValues.WindDirection = Math.Round(collectedWeatherInCity.Min(q => q.Values.WindDirection), 2);
+            minValues.WindSpeed = Math.Round(collectedWeatherInCity.Min(q => q.Values.WindSpeed), 2);
+            weather.MinValues = minValues;
+
+            Values maxValues = new();
+            maxValues.MaxUV = Math.Round(collectedWeatherInCity.Max(q => q.Values.MaxUV), 2);
+            maxValues.RelativeHumidity = Math.Round(collectedWeatherInCity.Max(q => q.Values.RelativeHumidity), 2);
+            maxValues.Temperature = Math.Round(collectedWeatherInCity.Max(q => q.Values.Temperature), 2);
+            maxValues.Clouds = Math.Round(collectedWeatherInCity.Max(q => q.Values.Clouds), 2);
+            maxValues.WindDirection = Math.Round(collectedWeatherInCity.Max(q => q.Values.WindDirection), 2);
+            maxValues.WindSpeed = Math.Round(collectedWeatherInCity.Max(q => q.Values.WindSpeed), 2);
+            weather.MaxValues = maxValues;
+
+            return weather;
+        }
+
+        public MeteorologicalDates GetMeteorologicalDates(string city)
+        {
+            MeteorologicalDates dates = new();
+
+            var collectedWeatherInCity = GetDailyWeatherDataForCity(city).OrderBy(c => c.Date).ToList();
+            dates.MeteorologicalSummer = MeteorologicalSummer(collectedWeatherInCity);
+            dates.MeteorolgicalSpring = MeteorologicalSpring(collectedWeatherInCity);
+            return dates;
+        }
+
+        //Sommar 5 dygn i rad över 10
+        public string MeteorologicalSummer(List<DailyWeather> weatherList)
+        {
+            string startDate = "";
+            int daysInRow = 0;
+
+            for (int i = 0; i < weatherList.Count(); i++)
+            {
+                daysInRow = 0;
+                startDate = weatherList[i].Date;
+
+                for (int y = 1; y < weatherList.Count(); y++)
+                {
+                    if (daysInRow >= 5)
+                    {
+                        return startDate;
+                    }
+                    if (weatherList[y].Values.Temperature >= 10)
+                    {
+                        daysInRow++;
+                        continue;
+                    }
+                    if (weatherList[y].Values.Temperature < 10)
+                    {
+                        break;
+                    }
+                }
+            }
+            return "";
+        }
+
+        public string MeteorologicalSpring(List<DailyWeather> weatherList)
+        {
+            string startDate = "";
+            int daysInRow = 0;
+
+            for (int i = 0; i < weatherList.Count(); i++)
+            {
+                daysInRow = 0;
+                startDate = weatherList[i].Date;
+
+                for (int y = 1; y < weatherList.Count(); y++)
+                {
+                    if (daysInRow >= 7)
+                    {
+                        return startDate;
+                    }
+                    if (weatherList[y].Values.Temperature > 0)
+                    {
+                        daysInRow++;
+                        continue;
+                    }
+                    if (weatherList[y].Values.Temperature <= 0)
+                    {
+                        break;
+                    }
+                }
+            }
+            return "";
+        }
     }
 }

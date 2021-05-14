@@ -1,18 +1,57 @@
-﻿@inject Services.IDAL WeatherData 
+﻿@inject Services.IDAL WeatherData
 
 
 <table class="table text-center">
-    <tr><th colspan="4"><h3>@City</h3></th></tr>
+    <tr><th colspan="7"><h3>@City</h3></th></tr>
+    @if (City != null)
+    {
+        <tr>
+            <td>Maxvärden:</td>
+            <td>@Weather.MaxValues.Temperature</td>
+            <td>@Weather.MaxValues.RelativeHumidity</td>
+            <td>@Weather.MaxValues.WindSpeed</td>
+            <td>@Weather.MaxValues.MaxUV</td>
+            <td>@Weather.MaxValues.Clouds</td>
+            <td>@Weather.MaxValues.WindDirection</td>
+        </tr>
+        <tr>
+            <td>Medelvärden:</td>
+            <td>@Weather.AverageValues.Temperature</td>
+            <td>@Weather.AverageValues.RelativeHumidity</td>
+            <td>@Weather.AverageValues.WindSpeed</td>
+            <td>@Weather.AverageValues.MaxUV</td>
+            <td>@Weather.AverageValues.Clouds</td>
+            <td>@Weather.AverageValues.WindDirection</td>
+        </tr>
+        <tr>
+            <td>Minvärden:</td>
+            <td>@Weather.MinValues.Temperature</td>
+            <td>@Weather.MinValues.RelativeHumidity</td>
+            <td>@Weather.MinValues.WindSpeed</td>
+            <td>@Weather.MinValues.MaxUV</td>
+            <td>@Weather.MinValues.Clouds</td>
+            <td>@Weather.MinValues.WindDirection</td>
+        </tr>
+    }
     <tr>
-        <th>Datum</th><th>Temperatur</th><th>Luftfuktighet</th><th>Vindhastighet</th>
+        <th>Datum</th>
+        <th>Temperatur</th>
+        <th>Luftfuktighet</th>
+        <th>Vindhastighet</th>
+        <th>MaxUV</th>
+        <th>Molntäthet</th>
+        <th>Vindriktning</th>
     </tr>
     @foreach (var data in WeatherData.GetDailyWeatherDataForCity(City))
     {
         <tr>
             <td>@data.Date</td>
-            <td>@data.Values.Temperature</td>
-            <td>@data.Values.RelativeHumidity</td>
-            <td>@data.Values.WindSpeed</td>
+            <td>@Math.Round(data.Values.Temperature, 2)</td>
+            <td>@Math.Round(data.Values.RelativeHumidity, 2)</td>
+            <td>@Math.Round(data.Values.WindSpeed, 2)</td>
+            <td>@Math.Round(data.Values.MaxUV, 2)</td>
+            <td>@Math.Round(data.Values.Clouds, 2)</td>
+            <td>@Math.Round(data.Values.WindDirection, 2)</td>
         </tr>
     }
 
@@ -22,4 +61,7 @@
 @code {
     [Parameter]
     public string City { get; set; }
+    [Parameter]
+    public Models.CityWeatherInfo Weather { get; set; }
+
 }

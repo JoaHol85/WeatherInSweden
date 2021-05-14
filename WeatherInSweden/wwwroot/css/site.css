@@ -1,5 +1,10 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
+.container {
+    max-width: 99%;
+    margin: unset; /*Om du inte vill ta bort centrering av din div för framtida re-sizing.*/
+}
+
 
 a.navbar-brand {
   white-space: normal;
