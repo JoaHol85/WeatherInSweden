@@ -32,7 +32,8 @@ namespace WeatherInSweden.Services
         // FUNGERAR SOM DEN SKA //
         public async Task Save25DaysBackOfWeatherDataForCityAsync(string city)           
         {
-            for (int i = 0; i < 3; i++) 
+            List<DailyWeather> listOfdailyWeather = GetDailyWeatherDataForCity(city).ToList();
+            for (int i = 0; i < 25; i++) 
             {
                 string date1 = DateTime.Now.AddDays(i - 26).Date.ToString().Substring(0, 10);
                 string date2 = DateTime.Now.AddDays(i -25).Date.ToString().Substring(0, 10);
@@ -58,7 +59,11 @@ namespace WeatherInSweden.Services
                     }
                 };
 
-                await DailyWeatherCollection().InsertOneAsync(weather);
+                bool excistInDB = listOfdailyWeather.Any(q => q.Date == weather.Date);
+                if(!excistInDB)
+                {
+                    await DailyWeatherCollection().InsertOneAsync(weather);
+                }
             }
         }
 
