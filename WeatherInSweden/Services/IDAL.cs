@@ -8,7 +8,7 @@ namespace WeatherInSweden.Services
     public interface IDAL
     {
         public MongoClient GetMongoClient();
-        public Task Save25DaysBackOfWeatherDataForCity(string city);
+        public Task Save25DaysBackOfWeatherDataForCityAsync(string city);
         public IMongoCollection<DailyWeather> DailyWeatherCollection();
         public IEnumerable<DailyWeather> GetDailyWeatherDataForCity(string city);
         public CityWeatherInfo GetWeatherForCity(string city);

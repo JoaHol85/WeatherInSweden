@@ -29,17 +29,15 @@ namespace WeatherInSweden.Pages
         {
         }
 
-        public void OnPostSaveWeatherData()
+        public async Task OnPostSaveWeatherData()
         {
-            _IDAL.Save25DaysBackOfWeatherDataForCity(City);
+            await _IDAL.Save25DaysBackOfWeatherDataForCityAsync(City);
             City = null;
-            OnGet();
         }
 
         public void OnPostShowWeatherDataForCity()
         {
             _IDAL.GetDailyWeatherDataForCity(City);
-            OnGet();
         }
     }
 }

@@ -14,13 +14,12 @@ namespace WeatherInSweden.Services
 {
     public class DAL : IDAL
     {
-        //private readonly HttpClient _httpClient;
+        private readonly HttpClient _httpClient;
 
-        //public DAL(HttpClient httpClient)
-        //{
-        //    _httpClient = httpClient;
-        //}
-
+        public DAL(HttpClient httpClient)
+        {
+            _httpClient = httpClient;
+        }
 
 
         public MongoClient GetMongoClient()
@@ -31,15 +30,14 @@ namespace WeatherInSweden.Services
         }
 
         // FUNGERAR SOM DEN SKA //
-        public async Task Save25DaysBackOfWeatherDataForCity(string city)           
+        public async Task Save25DaysBackOfWeatherDataForCityAsync(string city)           
         {
             for (int i = 0; i < 3; i++) 
             {
                 string date1 = DateTime.Now.AddDays(i - 26).Date.ToString().Substring(0, 10);
                 string date2 = DateTime.Now.AddDays(i -25).Date.ToString().Substring(0, 10);
 
-                var apiClient = new HttpClient();
-                var collection = new DAL();
+                var apiClient = _httpClient;
                 Task<string> getWeatherString = apiClient.GetStringAsync($"https://api.weatherbit.io/v2.0/history/daily?city={city}&start_date={date1}&end_date={date2}&key=9b13ed2386354ee08795a65c6caf789f");
                 string weatherString = await getWeatherString;
                 var dailyWeather = JsonSerializer.Deserialize<WeatherData>(weatherString);
@@ -60,7 +58,7 @@ namespace WeatherInSweden.Services
                     }
                 };
 
-                await collection.DailyWeatherCollection().InsertOneAsync(weather);
+                await DailyWeatherCollection().InsertOneAsync(weather);
             }
         }
 
@@ -77,7 +75,7 @@ namespace WeatherInSweden.Services
             var client = GetMongoClient();
             var MongoDB = client.GetDatabase("WeatherDB");
             var collection = MongoDB.GetCollection<DailyWeather>("WeatherCollection");
-            return collection.Find(new BsonDocument()).ToList().Where(q => q.City == city);
+            return collection.Find(new BsonDocument()).ToList().Where(q => q.City == city).OrderBy(q => q.Date);
         }
 
 
